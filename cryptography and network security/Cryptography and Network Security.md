@@ -17,7 +17,8 @@
 #### Các loại mã hóa:
 
 - **Mã hóa đối xứng (Symmetric Encryption)**: Cả người gửi và người nhận đều dùng cùng một khóa để mã hóa và giải mã (ví dụ: AES).
-- **Mã hóa bất đối xứng (Asymmetric Encryption)**: Sử dụng cặp khóa, bao gồm khóa công khai (public key) và khóa riêng tư (private key), để mã hóa và giải mã (ví dụ: RSA).
+- **Mã hóa bất đối xứng (Asymmetric Encryption)**: Sử dụng cặp khóa, bao gồm khóa công khai (public key) và khóa riêng tư (private key), để mã hóa và giải mã (ví dụ: RSA)
+=> Không thể convert từ hàm đã băm sang iso
 
 #### Các ứng dụng của Cryptography:
 
