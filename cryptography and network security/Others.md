@@ -1,108 +1,133 @@
-# Cryptography Algorithms and How They Work for Security Purposes
+## Symmetric Encryption
 
-## 1. Symmetric Encryption
+**How it Works:**
 
-### How it Works:
-- A single shared key is used for both encryption and decryption.
-- The sender encrypts the plaintext using the key, and the ciphertext is sent over the network.
-- The receiver uses the same key to decrypt the ciphertext back into plaintext.
+One shared key is used for both encryption and decryption.
 
-### Example Algorithm: AES (Advanced Encryption Standard)
-- **Process**:
-  1. Divides the plaintext into fixed-size blocks (128 bits by default).
-  2. Performs multiple rounds (10, 12, or 14 depending on the key size):
-     - **SubBytes**: Replace bytes using a substitution table (S-box).
-     - **ShiftRows**: Shift rows in the block to the left.
-     - **MixColumns**: Combine bytes within columns for diffusion.
-     - **AddRoundKey**: XOR the data with the encryption key.
+*   **Sender:** Encrypts plaintext into ciphertext using the shared key.
+*   **Receiver:** Decrypts ciphertext back to plaintext using the same key.
 
-### Use Case:
-- Encrypting sensitive data, like credit card numbers during online transactions.
+**Example Algorithm:** AES (Advanced Encryption Standard)
 
+**AES Process:**
 
-## 2. Asymmetric Encryption
+*   **Input:**
+    *   Plaintext: "Hello, World!"
+    *   Key: `00112233445566778899AABBCCDDEEFF` (128-bit key)
+*   **Step-by-Step AES Encryption:**
+    1.  Divide the Plaintext into 128-bit blocks (if shorter, pad the data). "Hello, World!" → "Hello, World!____" (padded with underscores).
+    2.  **Initial Round:** Apply the AddRoundKey operation (XOR the data with the encryption key).
+    3.  **Rounds:** For each round (10 rounds for 128-bit key):
+        *   SubBytes: Substitute each byte with values from an S-Box (substitution table).
+        *   ShiftRows: Shift the rows of the block to the left.
+        *   MixColumns: Mix bytes in each column to ensure diffusion.
+        *   AddRoundKey: XOR with a round key derived from the main encryption key.
+    4.  **Final Round:** No MixColumns in the final round. Only SubBytes, ShiftRows, and AddRoundKey.
+*   **Output:** Encrypted ciphertext: A 128-bit (16-byte) block like `5ad4f4d43e9dcd0c9bfcdb9d1b08df55`.
+*   **Decryption:** The receiver uses the same key and the inverse of each operation to retrieve the original plaintext.
 
-### How it Works:
-- A key pair (public key and private key) is generated.
-- The public key is used to encrypt data, and the private key is used to decrypt it.
-- Only the owner of the private key can decrypt the data encrypted with the public key.
+**Use Case:** Encrypting sensitive data, like credit card numbers, during online transactions.
 
-### Example Algorithm: RSA (Rivest–Shamir–Adleman)
+## Asymmetric Encryption
 
-**Process:**
-1. Generate two large prime numbers \( p \) and \( q \), then compute \( n = p \times q \).
-2. Compute \( \phi(n) = (p - 1) \times (q - 1) \).
-3. Choose a public key exponent \( e \) such that \( 1 < e < \phi(n) \) and \( e \) is co-prime to \( \phi(n) \).
-4. Compute the private key \( d \) where \( (d \times e) \mod \phi(n) = 1 \).
-5. **Encryption:** \( C = M^e \mod n \).
-6. **Decryption:** \( M = C^d \mod n \).
+**How it Works:**
 
-### Use Case:
-- Securely exchanging keys in SSL/TLS (e.g., HTTPS).
+Uses a pair of keys:
 
----
+*   Public Key for encryption.
+*   Private Key for decryption.
 
-## 3. Hashing
+Only the holder of the private key can decrypt data encrypted with the public key.
 
-### How it Works:
-- Hashing takes an input and converts it into a fixed-length output (hash).
-- The process is **one-way**; you cannot derive the original input from the hash.
-- Hashing ensures data integrity, as any change in the input results in a completely different hash.
+**Example Algorithm:** RSA (Rivest–Shamir–Adleman)
 
-### Example Algorithm: SHA-256
+**RSA Process:**
 
-**Process:**
-1. Breaks the input into 512-bit blocks.
-2. Applies compression functions to produce a fixed 256-bit output.
+*   **Input:**
+    *   Plaintext message: M = 123 (in numerical form).
+    *   Public key: (n, e) where n is the modulus and e is the public exponent.
+    *   Private key: (n, d) where n is the modulus and d is the private exponent.
+*   **Key Generation:**
+    *   Generate two large prime numbers p = 61, q = 53.
+    *   Calculate n = p * q = 61 * 53 = 3233.
+    *   Compute φ(n) = (p - 1)(q - 1) = 60 * 52 = 3120.
+    *   Choose a public exponent e = 17 (such that 1 < e < 3120 and gcd(e, φ(n)) = 1).
+    *   Compute private exponent d = 2753 (d * e ≡ 1 (mod 3120)).
+*   **Encryption:**
+    *   Formula: C = M^e mod n.
+    *   Encrypt the message: C = 123^17 mod 3233 = 855.
+*   **Decryption:**
+    *   Formula: M = C^d mod n.
+    *   Decrypt the ciphertext: M = 855^2753 mod 3233 = 123.
+*   **Output:**
+    *   Encrypted ciphertext: 855.
+    *   Decrypted message: 123.
 
-### Use Case:
-- Verifying the integrity of downloaded files.
+**Use Case:** Secure key exchange in protocols like SSL/TLS (e.g., HTTPS).
 
----
+## Hashing
 
-## 4. Digital Signatures
+**How it Works:**
 
-### How it Works:
-1. A hash of the data is created.
-2. The hash is encrypted using the sender's private key to create the digital signature.
-3. The recipient decrypts the signature using the sender’s public key and compares the hash with the received data.
-4. If the hashes match, the data’s authenticity and integrity are verified.
+Hashing converts an input into a fixed-length output, called a hash. The process is one-way, meaning you cannot reverse-engineer the original input from the hash. Hashing is commonly used for data integrity. If the input changes, the hash will change significantly.
 
-### Use Case:
-- Signing contracts electronically.
+**Example Algorithm:** SHA-256 (Secure Hash Algorithm)
 
----
+**SHA-256 Process:**
 
-# Security Protocols, Events, and Incident Responses
+*   **Input:** "Hello, World!" (plaintext).
+*   **Step 1:** Break the Input into 512-bit blocks. "Hello, World!" → "Hello, World!" (padded to 512 bits).
+*   **Step 2:** Compression Function: SHA-256 uses a series of rounds (64 rounds in total) involving bitwise operations like XOR, AND, and rotations.
+*   **Output:** The output is a fixed 256-bit (32-byte) hash. For "Hello, World!", the SHA-256 hash would be: `315f5bdb76d0787f3f7d9a5c2a9fdf5b4c8e2f4f87bcdc8a8d2fdc0c26a593cb`
 
-## 1. Security Protocols
+**Use Case:** Verifying file integrity during downloads or preventing data tampering.
 
-### How SSL/TLS Works:
-1. The client sends a `ClientHello` message with supported encryption methods.
-2. The server responds with a `ServerHello` and its certificate containing its public key.
-3. The client validates the certificate.
-4. The client encrypts a randomly generated "session key" with the server's public key and sends it.
-5. The server decrypts the session key and uses it for encrypted communication.
+## Digital Signatures
 
-### Example Use Case:
-- HTTPS secures communication between a browser and a web server.
+**How it Works:**
 
----
+*   Create a Hash of the message.
+*   Sign the hash using the sender's private key to create the digital signature.
+*   Verify the signature using the sender's public key and check the hash. If the hashes match, the message's authenticity and integrity are verified.
 
-## 2. Security Events and Monitoring
+**Example Workflow:**
 
-### Example Workflow for SIEM (Splunk):
-1. Log data from servers, firewalls, and applications is collected.
-2. Data is parsed, indexed, and analyzed in real-time.
-3. Alerts are triggered based on predefined rules (e.g., failed login attempts).
+*   **Input:**
+    *   Message: "Contract Agreement".
+    *   Private key of sender: d = 2753.
+*   **Step 1:** Create the Hash: Hash the message: SHA-256("Contract Agreement").
+*   **Step 2:** Encrypt the Hash with the sender's private key. Signature = Hash(M) ^ d mod n.
+*   **Step 3:** Recipient Verifies: Hash the received message and compare it with the decrypted signature.
 
----
+**Use Case:** Signing digital contracts or software to verify authenticity.
 
-## 3. Incident Response
+## Security Protocols, Events, and Incident Responses
 
-### Example Workflow for a DDoS Attack:
-1. **Detection**: Monitoring tools like Cloudflare detect unusual traffic spikes.
-2. **Containment**: Traffic is rerouted through a Web Application Firewall (WAF).
-3. **Eradication**: IP blocking is implemented for malicious sources.
-4. **Recovery**: Services are scaled back to normal levels after traffic subsides.
-5. **Post-Incident Review**: Logs are analyzed to improve defenses.
+### Security Protocols
+
+**SSL/TLS Workflow:**
+
+*   **ClientHello:** Client sends supported encryption methods.
+*   **ServerHello:** Server sends its certificate with public key.
+*   **Key Exchange:** Client generates a session key, encrypts it with the server's public key, and sends it.
+*   **Decryption:** Server decrypts the session key and establishes an encrypted session.
+
+**Example Use Case:** Securing HTTPS communication between a browser and a server.
+
+### Security Events and Monitoring
+
+**SIEM Example Workflow:**
+
+*   Collect log data from servers and firewalls.
+*   Parse, index, and analyze logs in real-time.
+*   Generate alerts based on predefined conditions, such as repeated failed logins.
+
+### Incident Response
+
+**DDoS Attack Workflow:**
+
+*   **Detection:** Cloudflare detects traffic anomalies.
+*   **Containment:** Redirect traffic through a Web Application Firewall (WAF).
+*   **Eradication:** Block IP addresses generating malicious traffic.
+*   **Recovery:** Scale back services after the attack subsides.
+*   **Post-Incident Review:** Analyze logs to strengthen future defenses.
