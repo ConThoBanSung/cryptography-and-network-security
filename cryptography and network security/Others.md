@@ -19,20 +19,6 @@
 ### Use Case:
 - Encrypting sensitive data, like credit card numbers during online transactions.
 
-### Example Implementation (Python - AES):
-```python
-from Crypto.Cipher import AES
-
-# Encryption
-key = b'sixteen byte key'  # 16-byte key
-cipher = AES.new(key, AES.MODE_EAX)
-nonce = cipher.nonce
-ciphertext, tag = cipher.encrypt_and_digest(b'Confidential Data')
-
-# Decryption
-cipher_decrypt = AES.new(key, AES.MODE_EAX, nonce=nonce)
-plaintext = cipher_decrypt.decrypt(ciphertext)
-print(plaintext.decode())
 
 ## 2. Asymmetric Encryption
 
